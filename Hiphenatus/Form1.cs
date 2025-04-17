@@ -610,17 +610,27 @@ namespace Hiphenatus
             Thread shader6Thread = new Thread(Shader5); shader6Thread.Start();
             Thread bytebeat4 = new Thread(Beat10); bytebeat4.Start();
 
+#if DEBUG
+            Console.WriteLine("Phase 4 - Start");
+#endif
+
             Thread.Sleep(8000);
 
             shader6Thread.Abort();
             bytebeat4.Abort();
 
-            Thread.Sleep(8000);
-
             Thread shader7Thread = new Thread(Shader6); shader7Thread.Start();
             Thread bytebeat5 = new Thread(Beat11); bytebeat5.Start();
 
+#if DEBUG
+            Console.WriteLine("Phase 5 - Start");
+#endif
+
             Thread.Sleep(8000);
+
+#if DEBUG
+            Console.WriteLine("FINAL DEATH - Start");
+#endif
 
             shader7Thread.Abort();
             bytebeat5.Abort();
