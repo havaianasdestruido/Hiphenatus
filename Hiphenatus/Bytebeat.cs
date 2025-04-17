@@ -648,7 +648,60 @@ namespace Hiphenatus
                     waveOutReset(hWaveOut);
                 }
             }
+
+
         }
 
-    }
+        public static void Beat11()
+        {
+            while (true)
+            {
+                WAVEFORMATEX wfx = new WAVEFORMATEX
+                {
+                    wFormatTag = WAVE_FORMAT_PCM,
+                    nChannels = 1,
+                    nSamplesPerSec = 16000,
+                    nAvgBytesPerSec = 16000,
+                    nBlockAlign = 1,
+                    wBitsPerSample = 8,
+                    cbSize = 0
+                };
+
+                const uint WAVE_MAPPER = 0xFFFFFFFF;
+                waveOutOpen(out hWaveOut, WAVE_MAPPER, ref wfx, IntPtr.Zero, IntPtr.Zero, CALLBACK_NULL);
+
+                byte[] sbuffer = new byte[17000 * 60];
+
+                for (int t = 0; t < sbuffer.Length; t++)
+                {
+                    sbuffer[t] = (byte)(10 * (t >> 7 | t | t >> 6) + 4 * (t & t >> 13 | t >> 6) >> 2 | t & t >> 8);
+                }
+
+                GCHandle handle = GCHandle.Alloc(sbuffer, GCHandleType.Pinned);
+
+                WAVEHDR header = new WAVEHDR
+                {
+                    lpData = handle.AddrOfPinnedObject(),
+                    dwBufferLength = (uint)sbuffer.Length,
+                    dwFlags = 0,
+                    dwLoops = 0
+                };
+
+                waveOutPrepareHeader(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+                waveOutWrite(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+                waveOutUnprepareHeader(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+
+                try
+                {
+                    Thread.Sleep(Timeout.Infinite);
+                }
+                catch (ThreadAbortException)
+                {
+                    handle.Free();
+                    waveOutClose(hWaveOut);
+                    waveOutReset(hWaveOut);
+                }
+            }
+
+        }
 }
