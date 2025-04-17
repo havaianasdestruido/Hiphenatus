@@ -598,7 +598,7 @@ namespace Hiphenatus
             }
         }
 
-            public static void Beat10()
+        public static void Beat10()
         {
             while (true)
             {
@@ -704,4 +704,58 @@ namespace Hiphenatus
             }
 
         }
+
+        public static void Beat11andhalf()
+        {
+            while (true)
+            {
+                WAVEFORMATEX wfx = new WAVEFORMATEX
+                {
+                    wFormatTag = WAVE_FORMAT_PCM,
+                    nChannels = 1,
+                    nSamplesPerSec = 44100,
+                    nAvgBytesPerSec = 44100,
+                    nBlockAlign = 1,
+                    wBitsPerSample = 8,
+                    cbSize = 0
+                };
+
+                const uint WAVE_MAPPER = 0xFFFFFFFF;
+                waveOutOpen(out hWaveOut, WAVE_MAPPER, ref wfx, IntPtr.Zero, IntPtr.Zero, CALLBACK_NULL);
+
+                byte[] sbuffer = new byte[17000 * 60];
+
+                for (int t = 0; t < sbuffer.Length; t++)
+                {
+                    sbuffer[t] = (byte)(10 * (t >> 7 | t | t >> 6) + 4 * (t & t >> 13 | t >> 6) >> 2 | t & t >> 80 | t & t >> 4 | t / 16);
+                }
+
+                GCHandle handle = GCHandle.Alloc(sbuffer, GCHandleType.Pinned);
+
+                WAVEHDR header = new WAVEHDR
+                {
+                    lpData = handle.AddrOfPinnedObject(),
+                    dwBufferLength = (uint)sbuffer.Length,
+                    dwFlags = 0,
+                    dwLoops = 0
+                };
+
+                waveOutPrepareHeader(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+                waveOutWrite(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+                waveOutUnprepareHeader(hWaveOut, ref header, (uint)Marshal.SizeOf(header));
+
+                try
+                {
+                    Thread.Sleep(Timeout.Infinite);
+                }
+                catch (ThreadAbortException)
+                {
+                    handle.Free();
+                    waveOutClose(hWaveOut);
+                    waveOutReset(hWaveOut);
+                }
+            }
+
+        }
+    }
 }
