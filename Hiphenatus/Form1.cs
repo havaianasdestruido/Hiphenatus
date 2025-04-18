@@ -639,10 +639,10 @@ namespace Hiphenatus
             bytebeat5.Abort();
             exexe.Abort();
 
-            corr1.Abort();
+            /*corr1.Abort();
             corr2.Abort();
             corr3.Abort();
-            corr4.Abort();
+            corr4.Abort();*/
 
             Thread bytebeat6 = new Thread(Beat11andhalf); bytebeat6.Start();
 
