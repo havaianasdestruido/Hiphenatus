@@ -9,11 +9,11 @@ Imports System.Runtime.InteropServices
 ' Revise os valores dos atributos do assembly
 
 <Assembly: AssemblyTitle("OpenHiphenatus")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyDescription("Hiphenatus Shader testing app, harmless.")>
+<Assembly: AssemblyCompany("UltimateQuack")>
 <Assembly: AssemblyProduct("OpenHiphenatus")>
 <Assembly: AssemblyCopyright("Copyright ©  2025")>
-<Assembly: AssemblyTrademark("")>
+<Assembly: AssemblyTrademark("UltimateQuack")>
 
 <Assembly: ComVisible(False)>
 
