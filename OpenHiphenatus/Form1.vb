@@ -1,11 +1,9 @@
 ﻿Public Class Form1
+    ' [[!!!FUCKING UGLY CODE ALERT!!!]]   [[!!!FUCKING UGLY CODE ALERT!!!]]   
     ' Very VERY simple GUI for Shaders debugging and testing.
     ' OpenHiphenatus is basically just that, a Form filled of buttons,
     ' just like MEMZ Clean!
-
-    'Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
-    'End Sub
+    ' [[!!!FUCKING UGLY CODE ALERT!!!]]   [[!!!FUCKING UGLY CODE ALERT!!!]]   
     Public Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Hiphenatus.Form1.
             Shader1()
@@ -30,7 +28,6 @@
         'TODO: Fix it ASAP.
         Throw New NotImplementedException("This shader is not implemented [to OH] yet.")
     End Sub
-
     Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
         Hiphenatus.Bytebeats.
             Beat1()
