@@ -124,8 +124,7 @@ Partial Class Form1
         '
         'Button9
         '
-        Me.Button9.Enabled = False
-        Me.Button9.ForeColor = System.Drawing.SystemColors.ButtonShadow
+        Me.Button9.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Button9.Location = New System.Drawing.Point(12, 245)
         Me.Button9.Name = "Button9"
         Me.Button9.Size = New System.Drawing.Size(109, 23)

@@ -86,4 +86,9 @@
         Hiphenatus.Form1.
             Shader8()
     End Sub
+
+    Private Sub Button9_Click(sender As Object, e As EventArgs) Handles Button9.Click
+        Hiphenatus.Form1.
+            Shader9()
+    End Sub
 End Class

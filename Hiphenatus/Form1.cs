@@ -545,6 +545,62 @@ namespace Hiphenatus
                 DeleteDC(mdc);
             }
         }
+        public static void Shader9()
+        {
+            int x = GetSystemMetrics(SM_CXSCREEN);
+            int y = GetSystemMetrics(SM_CYSCREEN);
+            int size = x * y;
+
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            IntPtr mdc = CreateCompatibleDC(hdc);
+
+            BITMAPINFO bmi = new BITMAPINFO
+            {
+                bmiHeader = new BITMAPINFOHEADER
+                {
+                    biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER)),
+                    biWidth = x,
+                    biHeight = -y,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = 0
+                },
+                bmiColors = new RGBQUAD[256]
+            };
+
+            IntPtr bitmap = CreateDIBSection(hdc, ref bmi, 0, out IntPtr ppvBits, IntPtr.Zero, 0);
+            IntPtr oldObject = SelectObject(mdc, bitmap);
+            Random skibidi = new Random();
+            byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+            try
+            {
+                while (true)
+                {
+                    BitBlt(mdc, 0 + skibidi.Next(-5, 5), 0 + skibidi.Next(-5, 5), x + skibidi.Next(-5, 5), y + skibidi.Next(-5, 5), hdc, 0 + skibidi.Next(-5, 5), 0 + skibidi.Next(-5, 5), SRCPAINT);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
+
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(((rgbArray[i * 3 + 2])) + 1);
+                        rgbArray[i * 3 + 1] = (byte)(((rgbArray[i * 3 + 1])) + 2);
+                        rgbArray[i * 3 + 0] = (byte)(((rgbArray[i * 3 + 0])) + 3);
+
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0 + skibidi.Next(-5, 5), 0 + skibidi.Next(-5, 5), x + skibidi.Next(-5, 5), y + skibidi.Next(-5, 5), mdc, 0 + skibidi.Next(-5, 5), 0 + skibidi.Next(-5, 5), SRCERASE);
+                    //ci(sigma, sigma, sigma*2, sigma*2);
+                    Thread.Sleep(1);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+        }
         public void ci(int x, int y, int w, int h)
         {
             IntPtr hdc = GetDC(IntPtr.Zero);
