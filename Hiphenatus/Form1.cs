@@ -660,7 +660,6 @@ namespace Hiphenatus
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            execPayload();
 #if DEBUG
             Console.WriteLine("Form1 loaded!");
 #endif
