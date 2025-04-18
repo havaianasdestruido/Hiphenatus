@@ -3,11 +3,9 @@
     ' OpenHiphenatus is basically just that, a Form filled of buttons,
     ' just like MEMZ Clean!
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        MessageBox.Show(
-            "Welcome to OpenHiphenatus! Here you can select which shaders you can run without harming you computer."
-            )
-    End Sub
+    'Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    'End Sub
     Public Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Hiphenatus.Form1.
             Shader1()
@@ -31,5 +29,54 @@
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         'TODO: Fix it ASAP.
         Throw New NotImplementedException("This shader is not implemented [to OH] yet.")
+    End Sub
+
+    Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
+        Hiphenatus.Bytebeats.
+            Beat1()
+    End Sub
+    Private Sub Button12_Click(sender As Object, e As EventArgs) Handles Button12.Click
+        Hiphenatus.Bytebeats.
+            Beat2()
+    End Sub
+    Private Sub Button13_Click(sender As Object, e As EventArgs) Handles Button13.Click
+        Hiphenatus.Bytebeats.
+            Beat3()
+    End Sub
+    Private Sub Button14_Click(sender As Object, e As EventArgs) Handles Button14.Click
+        Hiphenatus.Bytebeats.
+            Beat4()
+    End Sub
+    Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
+        Hiphenatus.Bytebeats.
+            Beat5()
+    End Sub
+    Private Sub Button16_Click(sender As Object, e As EventArgs) Handles Button16.Click
+        Hiphenatus.Bytebeats.
+            Beat6()
+    End Sub
+    Private Sub Button17_Click(sender As Object, e As EventArgs) Handles Button17.Click
+        Hiphenatus.Bytebeats.
+            Beat7()
+    End Sub
+    Private Sub Button18_Click(sender As Object, e As EventArgs) Handles Button18.Click
+        Hiphenatus.Bytebeats.
+            Beat8()
+    End Sub
+    Private Sub Button19_Click(sender As Object, e As EventArgs) Handles Button19.Click
+        Hiphenatus.Bytebeats.
+            Beat9()
+    End Sub
+    Private Sub Button20_Click(sender As Object, e As EventArgs) Handles Button20.Click
+        Hiphenatus.Bytebeats.
+            Beat10()
+    End Sub
+    Private Sub Button21_Click(sender As Object, e As EventArgs) Handles Button21.Click
+        Hiphenatus.Bytebeats.
+            Beat11()
+    End Sub
+    Private Sub Button22_Click(sender As Object, e As EventArgs) Handles Button22.Click
+        Hiphenatus.Bytebeats.
+            Beat11andhalf()
     End Sub
 End Class
