@@ -1,9 +1,9 @@
 # Hiphenatus
-Destructible trojan.
+Harmful GDI trojan. Now with [more] SHADERS & [more] BYTEBITCHES!!
 
 ## Tree
 ### Hiphenatus
-Main trojan, used as a "lib" on OpenHiphenatus. Written in C#.
+Main project, used as a "lib" on OpenHiphenatus. Written in C#.
 
 ### OpenHiphenatus
-Shader testing GUI. Written in VB .NET.
+Shader testing GUI. Written in VisualBasic .NET.
