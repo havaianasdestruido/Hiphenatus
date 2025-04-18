@@ -857,12 +857,12 @@ namespace Hiphenatus
 
             Process.Start("wmplayer.exe", $"\"{tempFilePath}\"");
 
-            Task.Run(() =>
-            {
+            /*Task.Run(() =>
+            {*/
                 Thread.Sleep(5000);
                 File.Delete(tempFilePath);
                 Process.Start("taskkill wmplayer.exe /f /im");
-            });
+            //});
         }
     }
 }
