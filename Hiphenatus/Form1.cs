@@ -431,6 +431,120 @@ namespace Hiphenatus
                 DeleteDC(mdc);
             }
         }
+        public static void Shader7()
+        {
+            int x = GetSystemMetrics(SM_CXSCREEN);
+            int y = GetSystemMetrics(SM_CYSCREEN);
+            int size = x * y;
+
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            IntPtr mdc = CreateCompatibleDC(hdc);
+
+            BITMAPINFO bmi = new BITMAPINFO
+            {
+                bmiHeader = new BITMAPINFOHEADER
+                {
+                    biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER)),
+                    biWidth = x,
+                    biHeight = -y,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = 0
+                },
+                bmiColors = new RGBQUAD[256]
+            };
+
+            IntPtr bitmap = CreateDIBSection(hdc, ref bmi, 0, out IntPtr ppvBits, IntPtr.Zero, 0);
+            IntPtr oldObject = SelectObject(mdc, bitmap);
+            int sigma = 1;
+            byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+            try
+            {
+                while (true)
+                {
+                    BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
+
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(((int)(rgbArray[i * 3 + 2])) + Math.Sqrt(sigma * i >> (sigma/i)));
+                        rgbArray[i * 3 + 1] = (byte)(((int)(rgbArray[i * 3 + 1])) + Math.Sqrt(sigma * i >> (sigma/i)));
+                        rgbArray[i * 3 + 0] = (byte)(((int)(rgbArray[i * 3 + 0])) + Math.Sqrt(sigma * i >> (sigma/i)));
+
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 10, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    //ci(sigma, sigma, sigma*2, sigma*2);
+                    sigma++;
+                    Thread.Sleep(1);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+        }
+        public static void Shader8()
+        {
+            int x = GetSystemMetrics(SM_CXSCREEN);
+            int y = GetSystemMetrics(SM_CYSCREEN);
+            int size = x * y;
+
+            IntPtr hdc = GetDC(IntPtr.Zero);
+            IntPtr mdc = CreateCompatibleDC(hdc);
+
+            BITMAPINFO bmi = new BITMAPINFO
+            {
+                bmiHeader = new BITMAPINFOHEADER
+                {
+                    biSize = (uint)Marshal.SizeOf(typeof(BITMAPINFOHEADER)),
+                    biWidth = x,
+                    biHeight = -y,
+                    biPlanes = 1,
+                    biBitCount = 24,
+                    biCompression = 0
+                },
+                bmiColors = new RGBQUAD[256]
+            };
+
+            IntPtr bitmap = CreateDIBSection(hdc, ref bmi, 0, out IntPtr ppvBits, IntPtr.Zero, 0);
+            IntPtr oldObject = SelectObject(mdc, bitmap);
+            int sigma = 1;
+            byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+            try
+            {
+                while (true)
+                {
+                    BitBlt(mdc, 1, 1, x, y, hdc, 0, 0, SRCAND);
+                    Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
+
+                    Parallel.For(8, size, i =>
+                    {
+                        rgbArray[i * 3 + 2] = (byte)(((int)(rgbArray[i * 3 + 2])) + Math.Sqrt(sigma * i >> 10));
+                        rgbArray[i * 3 + 1] = (byte)(((int)(rgbArray[i * 3 + 1])) + Math.Sqrt(sigma * i >> 1010));
+                        rgbArray[i * 3 + 0] = (byte)(((int)(rgbArray[i * 3 + 0])) + Math.Sqrt(sigma * i >> 101010));
+
+                    });
+                    Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
+                    BitBlt(hdc, 0, 0, x, y, mdc, 0, 0, SRCCOPY);
+                    //ci(sigma, sigma, sigma*2, sigma*2);
+                    sigma++;
+                    Thread.Sleep(1);
+                }
+            }
+            catch (ThreadAbortException)
+            {
+                SelectObject(mdc, oldObject);
+                ReleaseDC(IntPtr.Zero, hdc);
+                DeleteObject(bitmap);
+                DeleteDC(hdc);
+                DeleteDC(mdc);
+            }
+        }
         public void ci(int x, int y, int w, int h)
         {
             IntPtr hdc = GetDC(IntPtr.Zero);

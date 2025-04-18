@@ -22,6 +22,7 @@ Partial Class Form1
     'Não o modifique usando o editor de códigos.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button3 = New System.Windows.Forms.Button()
@@ -103,8 +104,7 @@ Partial Class Form1
         '
         'Button7
         '
-        Me.Button7.Enabled = False
-        Me.Button7.ForeColor = System.Drawing.SystemColors.ButtonShadow
+        Me.Button7.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Button7.Location = New System.Drawing.Point(12, 187)
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(109, 23)
@@ -114,8 +114,7 @@ Partial Class Form1
         '
         'Button8
         '
-        Me.Button8.Enabled = False
-        Me.Button8.ForeColor = System.Drawing.SystemColors.ButtonShadow
+        Me.Button8.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Button8.Location = New System.Drawing.Point(12, 216)
         Me.Button8.Name = "Button8"
         Me.Button8.Size = New System.Drawing.Size(109, 23)
@@ -280,6 +279,7 @@ Partial Class Form1
         Me.Controls.Add(Me.Button4)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Form1"
         Me.Text = "Main Menu"
         Me.ResumeLayout(False)

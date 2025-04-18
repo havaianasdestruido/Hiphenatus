@@ -25,8 +25,8 @@
             Shader5()
     End Sub
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
-        'TODO: Fix it ASAP.
-        Throw New NotImplementedException("This shader is not implemented [to OH] yet.")
+        Hiphenatus.Form1.
+            Shader6()
     End Sub
     Private Sub Button11_Click(sender As Object, e As EventArgs) Handles Button11.Click
         Hiphenatus.Bytebeats.
@@ -75,5 +75,15 @@
     Private Sub Button22_Click(sender As Object, e As EventArgs) Handles Button22.Click
         Hiphenatus.Bytebeats.
             Beat11andhalf()
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Hiphenatus.Form1.
+            Shader7()
+    End Sub
+
+    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
+        Hiphenatus.Form1.
+            Shader8()
     End Sub
 End Class
