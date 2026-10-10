@@ -350,11 +350,15 @@ namespace Hiphenatus
                     BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
+                    double sinOk = Math.Sin(ok);
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(Math.Sin(i) * Math.Tan(i / Math.Sin(ok)));
-                        rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * Math.Tan(i / Math.Sin(ok)));
-                        rgbArray[i * 3 + 0] = (byte)(Math.Sin(i) * Math.Tan(i / Math.Sin(ok)));
+                        // Cache loop-invariant math calculations for performance
+                        double tanVal = Math.Tan(i / sinOk);
+                        double sinI = Math.Sin(i);
+                        rgbArray[i * 3 + 2] = (byte)(sinI * tanVal);
+                        rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * tanVal);
+                        rgbArray[i * 3 + 0] = (byte)(sinI * tanVal);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -408,11 +412,14 @@ namespace Hiphenatus
                     BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
+                    double factor = Math.Tan(sigma) * sigma;
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * (i / (Math.Tan(sigma) * sigma)));
-                        rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * (i / (Math.Tan(sigma) * sigma)));
-                        rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * (i / (Math.Tan(sigma) * sigma)));
+                        // Cache loop-invariant math calculations for performance
+                        double term = i / factor;
+                        rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * term);
+                        rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * term);
+                        rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * term);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
