@@ -404,6 +404,13 @@ namespace Hiphenatus
             IntPtr oldObject = SelectObject(mdc, bitmap);
 
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+
+            // Precompute Sqrt for bytes (0-255) to avoid redundant math per-pixel
+            double[] sqrtCache = new double[256];
+            for (int i = 0; i < 256; i++) {
+                sqrtCache[i] = Math.Sqrt(i);
+            }
+
             int sigma = 1;
             try
             {
@@ -417,9 +424,9 @@ namespace Hiphenatus
                     {
                         // Cache loop-invariant math calculations for performance
                         double term = i / factor;
-                        rgbArray[i * 3 + 2] = (byte)(Math.Sqrt(rgbArray[i * 3 + 2]) * term);
-                        rgbArray[i * 3 + 1] = (byte)(Math.Sqrt(rgbArray[i * 3 + 1]) * term);
-                        rgbArray[i * 3 + 0] = (byte)(Math.Sqrt(rgbArray[i * 3 + 0]) * term);
+                        rgbArray[i * 3 + 2] = (byte)(sqrtCache[rgbArray[i * 3 + 2]] * term);
+                        rgbArray[i * 3 + 1] = (byte)(sqrtCache[rgbArray[i * 3 + 1]] * term);
+                        rgbArray[i * 3 + 0] = (byte)(sqrtCache[rgbArray[i * 3 + 0]] * term);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
