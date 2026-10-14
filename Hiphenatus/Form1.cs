@@ -665,12 +665,23 @@ namespace Hiphenatus
             SelectObject(hcdc, hBitmap);
             BitBlt(hcdc, 0, 0, w, h, hdc, 0, 0, SRCCOPY);
 
+            // ⚡ Bolt: Precompute Math.Tan(y) to avoid calculating it inside the render loop
+            float[] tanY = new float[h + 1];
+            for (int y = 0; y <= h; y++)
+            {
+                tanY[y] = (float)Math.Tan(y);
+            }
+
             for (int t = 0; ; t += 20)
             {
                 hdc = GetDC(IntPtr.Zero);
+
+                // ⚡ Bolt: Cache Math.Tan(t) as it is loop-invariant for the inner y-loop
+                float tanT = (float)Math.Tan(t);
+
                 for (int y = 0; y <= h; y++)
                 {
-                    float x = (float)((float)Math.Tan(y) + Math.Tan(t));
+                    float x = tanY[y] + tanT;
                     BitBlt(hcdc, (int)x, y, w, 1, hcdc, 0, (int)(y + x), SRCCOPY);
                 }
 
