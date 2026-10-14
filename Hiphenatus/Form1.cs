@@ -117,9 +117,11 @@ namespace Hiphenatus
 
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] - 1);
-                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] - 1);
-                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] - 1);
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
+                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] - 1);
+                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] - 1);
+                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] - 1);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -176,9 +178,11 @@ namespace Hiphenatus
 
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 0]);
-                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1]);
-                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 2]);
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
+                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 0]);
+                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1]);
+                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 2]);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -235,9 +239,12 @@ namespace Hiphenatus
 
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 2 + 2]);
-                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 2 + 1]);
-                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 2 + 2]);
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset3 = i * 3;
+                        int offset2 = i * 2;
+                        rgbArray[offset3 + 2] = (byte)(rgbArray[offset2 + 2]);
+                        rgbArray[offset3 + 1] = (byte)(rgbArray[offset2 + 1]);
+                        rgbArray[offset3 + 0] = (byte)(rgbArray[offset2 + 2]);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -293,9 +300,11 @@ namespace Hiphenatus
 
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(rgbArray[i * 3 + 2] * rgbArray[i * 3 + 1]);
-                        rgbArray[i * 3 + 1] = (byte)(rgbArray[i * 3 + 1] * rgbArray[i * 3 + 0]);
-                        rgbArray[i * 3 + 0] = (byte)(rgbArray[i * 3 + 0] * rgbArray[i * 3 + 2]);
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
+                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] * rgbArray[offset + 1]);
+                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] * rgbArray[offset + 0]);
+                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] * rgbArray[offset + 2]);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -354,11 +363,13 @@ namespace Hiphenatus
                     Parallel.For(8, size, i =>
                     {
                         // Cache loop-invariant math calculations for performance
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
                         double tanVal = Math.Tan(i / sinOk);
                         double sinI = Math.Sin(i);
-                        rgbArray[i * 3 + 2] = (byte)(sinI * tanVal);
-                        rgbArray[i * 3 + 1] = (byte)(Math.Cos(i) * tanVal);
-                        rgbArray[i * 3 + 0] = (byte)(sinI * tanVal);
+                        rgbArray[offset + 2] = (byte)(sinI * tanVal);
+                        rgbArray[offset + 1] = (byte)(Math.Cos(i) * tanVal);
+                        rgbArray[offset + 0] = (byte)(sinI * tanVal);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -423,10 +434,12 @@ namespace Hiphenatus
                     Parallel.For(8, size, i =>
                     {
                         // Cache loop-invariant math calculations for performance
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
                         double term = i / factor;
-                        rgbArray[i * 3 + 2] = (byte)(sqrtCache[rgbArray[i * 3 + 2]] * term);
-                        rgbArray[i * 3 + 1] = (byte)(sqrtCache[rgbArray[i * 3 + 1]] * term);
-                        rgbArray[i * 3 + 0] = (byte)(sqrtCache[rgbArray[i * 3 + 0]] * term);
+                        rgbArray[offset + 2] = (byte)(sqrtCache[rgbArray[offset + 2]] * term);
+                        rgbArray[offset + 1] = (byte)(sqrtCache[rgbArray[offset + 1]] * term);
+                        rgbArray[offset + 0] = (byte)(sqrtCache[rgbArray[offset + 0]] * term);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -601,9 +614,11 @@ namespace Hiphenatus
 
                     Parallel.For(8, size, i =>
                     {
-                        rgbArray[i * 3 + 2] = (byte)(((rgbArray[i * 3 + 2])) + 1);
-                        rgbArray[i * 3 + 1] = (byte)(((rgbArray[i * 3 + 1])) + 2);
-                        rgbArray[i * 3 + 0] = (byte)(((rgbArray[i * 3 + 0])) + 3);
+                        // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
+                        int offset = i * 3;
+                        rgbArray[offset + 2] = (byte)(((rgbArray[offset + 2])) + 1);
+                        rgbArray[offset + 1] = (byte)(((rgbArray[offset + 1])) + 2);
+                        rgbArray[offset + 0] = (byte)(((rgbArray[offset + 0])) + 3);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
