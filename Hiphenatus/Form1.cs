@@ -360,16 +360,20 @@ namespace Hiphenatus
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
                     double sinOk = Math.Sin(ok);
+                    double invSinOk = 1.0 / sinOk;
                     Parallel.For(8, size, i =>
                     {
                         // Cache loop-invariant math calculations for performance
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
-                        double tanVal = Math.Tan(i / sinOk);
+                        // ⚡ Bolt: Strength reduction: replace division by multiplying with pre-calculated inverse.
+                        double tanVal = Math.Tan(i * invSinOk);
                         double sinI = Math.Sin(i);
-                        rgbArray[offset + 2] = (byte)(sinI * tanVal);
+                        // ⚡ Bolt: Eliminate common sub-expression since R and B compute the exact same value.
+                        byte rAndB = (byte)(sinI * tanVal);
+                        rgbArray[offset + 2] = rAndB;
                         rgbArray[offset + 1] = (byte)(Math.Cos(i) * tanVal);
-                        rgbArray[offset + 0] = (byte)(sinI * tanVal);
+                        rgbArray[offset + 0] = rAndB;
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -557,9 +561,12 @@ namespace Hiphenatus
                         // ⚡ Bolt: Cache repetitive array indices and math operations to significantly reduce overhead.
                         int offset = i * 3;
                         int sigI = sigma * i;
+                        // ⚡ Bolt: Because C# applies % 32 on 32-bit shift sizes, 1010 >> 32 = 18 and 101010 >> 32 = 18.
+                        // Compute Math.Sqrt for this shift once and reuse it for both R and G channels.
+                        double sqrtCommon = Math.Sqrt(sigI >> 1010);
                         rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] + Math.Sqrt(sigI >> 10));
-                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] + Math.Sqrt(sigI >> 1010));
-                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] + Math.Sqrt(sigI >> 101010));
+                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] + sqrtCommon);
+                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] + sqrtCommon);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
