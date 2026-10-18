@@ -435,12 +435,14 @@ namespace Hiphenatus
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
                     double factor = Math.Tan(sigma) * sigma;
+                    // ⚡ Bolt: Strength reduction: replace division by multiplying with pre-calculated inverse.
+                    double invFactor = 1.0 / factor;
                     Parallel.For(8, size, i =>
                     {
                         // Cache loop-invariant math calculations for performance
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
-                        double term = i / factor;
+                        double term = i * invFactor;
                         rgbArray[offset + 2] = (byte)(sqrtCache[rgbArray[offset + 2]] * term);
                         rgbArray[offset + 1] = (byte)(sqrtCache[rgbArray[offset + 1]] * term);
                         rgbArray[offset + 0] = (byte)(sqrtCache[rgbArray[offset + 0]] * term);
