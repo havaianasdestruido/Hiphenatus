@@ -351,6 +351,15 @@ namespace Hiphenatus
 
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
 
+            // ⚡ Bolt: Precompute trigonometric functions for each pixel index since they never change.
+            // This replaces millions of Math.Sin/Cos calls per frame with simple array lookups.
+            double[] sinCache = new double[size];
+            double[] cosCache = new double[size];
+            Parallel.For(0, size, i => {
+                sinCache[i] = Math.Sin(i);
+                cosCache[i] = Math.Cos(i);
+            });
+
             double ok = 0;
             try
             {
@@ -368,11 +377,14 @@ namespace Hiphenatus
                         int offset = i * 3;
                         // ⚡ Bolt: Strength reduction: replace division by multiplying with pre-calculated inverse.
                         double tanVal = Math.Tan(i * invSinOk);
-                        double sinI = Math.Sin(i);
+
+                        // ⚡ Bolt: Use precomputed sine/cosine values
+                        double sinI = sinCache[i];
+
                         // ⚡ Bolt: Eliminate common sub-expression since R and B compute the exact same value.
                         byte rAndB = (byte)(sinI * tanVal);
                         rgbArray[offset + 2] = rAndB;
-                        rgbArray[offset + 1] = (byte)(Math.Cos(i) * tanVal);
+                        rgbArray[offset + 1] = (byte)(cosCache[i] * tanVal);
                         rgbArray[offset + 0] = rAndB;
 
                     });
