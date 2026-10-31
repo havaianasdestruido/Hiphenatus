@@ -355,7 +355,7 @@ namespace Hiphenatus
             // This replaces millions of Math.Sin/Cos calls per frame with simple array lookups.
             double[] sinCache = new double[size];
             double[] cosCache = new double[size];
-            Parallel.For(0, size, i => {
+            Parallel.For(8, size, i => {
                 sinCache[i] = Math.Sin(i);
                 cosCache[i] = Math.Cos(i);
             });
