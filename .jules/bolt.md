@@ -15,3 +15,7 @@
 ## 2025-10-24 - [Strength Reduction: Avoiding Division with Conditional Bypass in Loops]
 **Learning:** [In extremely tight rendering loops (like `Parallel.For` acting over millions of pixels per frame), integer division operations (`X / Y`) can introduce a significant CPU bottleneck since division instructions take many more CPU cycles than basic branching or multiplication. If the divisor acts in such a way that the result evaluates to zero for the vast majority of iterations (e.g. `X < Y`), computing the division anyway wastes immense amounts of cycles.]
 **Action:** [Whenever encountering loop operations that involve division with a variable denominator that is typically much larger than the numerator, introduce a conditional branch check (like `Y > X ? 0 : X / Y`) to bypass the expensive division completely. Modern branch prediction handles this beautifully and execution times will decrease substantially.]
+
+## 2025-02-18 - [Precomputing Frame-Constant Math Functions]
+**Learning:** [In pixel shaders processing millions of pixels per frame within `Parallel.For` loops, applying trigonometric functions like `Math.Sin(i)` and `Math.Cos(i)` where `i` is the static pixel index results in massive redundant computation, as these values never change between frames.]
+**Action:** [Precompute pixel-index dependent static functions into arrays (like `sinCache` and `cosCache`) outside of the `while (true)` rendering loop and replace the expensive function calls with fast array lookups.]
