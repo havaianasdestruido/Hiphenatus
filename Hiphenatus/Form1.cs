@@ -180,9 +180,9 @@ namespace Hiphenatus
                     {
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
+                        // ⚡ Bolt: Removed redundant self-assignment to G channel and
+                        // simplified R/B channel assignment to eliminate redundant memory write per pixel
                         rgbArray[offset + 2] = (byte)(rgbArray[offset + 0]);
-                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1]);
-                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 2]);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);

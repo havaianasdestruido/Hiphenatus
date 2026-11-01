@@ -19,3 +19,7 @@
 ## 2025-02-18 - [Precomputing Frame-Constant Math Functions]
 **Learning:** [In pixel shaders processing millions of pixels per frame within `Parallel.For` loops, applying trigonometric functions like `Math.Sin(i)` and `Math.Cos(i)` where `i` is the static pixel index results in massive redundant computation, as these values never change between frames.]
 **Action:** [Precompute pixel-index dependent static functions into arrays (like `sinCache` and `cosCache`) outside of the `while (true)` rendering loop and replace the expensive function calls with fast array lookups.]
+
+## 2025-02-18 - [Redundant Memory Writes from Un-swapped Channel Self-Assignment]
+**Learning:** [In tight rendering pixel loops that apply swap or matrix transformations to RGB channels (e.g. `rgbArray[offset + 2] = rgbArray[offset + 0]`), failing to properly use a temporary swap variable can result in overwriting channels with their own value while concurrently running redundant self-assignments (e.g. `rgbArray[offset + 1] = rgbArray[offset + 1]`). This causes millions of useless memory writes per frame, drastically increasing memory bandwidth overhead with zero visual effect.]
+**Action:** [Always audit channel swapping and assigning logic in tight `Parallel.For` loops to ensure redundant self-assignments are eliminated entirely, and that target destinations aren't inadvertently being assigned the very same value they were going to hold anyway.]
