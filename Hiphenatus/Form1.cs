@@ -242,9 +242,11 @@ namespace Hiphenatus
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset3 = i * 3;
                         int offset2 = i * 2;
-                        rgbArray[offset3 + 2] = (byte)(rgbArray[offset2 + 2]);
+                        // ⚡ Bolt: Cache repetitive memory lookups to local variables to eliminate overhead.
+                        byte rAndB = rgbArray[offset2 + 2];
+                        rgbArray[offset3 + 2] = rAndB;
                         rgbArray[offset3 + 1] = (byte)(rgbArray[offset2 + 1]);
-                        rgbArray[offset3 + 0] = (byte)(rgbArray[offset2 + 2]);
+                        rgbArray[offset3 + 0] = rAndB;
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -302,9 +304,15 @@ namespace Hiphenatus
                     {
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
-                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] * rgbArray[offset + 1]);
-                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] * rgbArray[offset + 0]);
-                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] * rgbArray[offset + 2]);
+                        // ⚡ Bolt: Extract pixel channel variables to eliminate 3 redundant and dependent memory fetch overheads.
+                        byte r = rgbArray[offset + 0];
+                        byte g = rgbArray[offset + 1];
+                        byte b = rgbArray[offset + 2];
+
+                        byte newB = (byte)(b * g);
+                        rgbArray[offset + 2] = newB;
+                        rgbArray[offset + 1] = (byte)(g * r);
+                        rgbArray[offset + 0] = (byte)(r * newB);
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
