@@ -570,6 +570,13 @@ namespace Hiphenatus
             IntPtr oldObject = SelectObject(mdc, bitmap);
             int sigma = 1;
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+
+            // ⚡ Bolt: Precalculate Math.Sqrt(i) for all pixels to eliminate millions of Sqrt calls per frame
+            double[] sqrtICache = new double[size];
+            Parallel.For(8, size, i =>
+            {
+                sqrtICache[i] = Math.Sqrt(i);
+            });
             try
             {
                 while (true)
@@ -577,15 +584,23 @@ namespace Hiphenatus
                     BitBlt(mdc, 1, 1, x, y, hdc, 0, 0, SRCAND);
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
+                    // ⚡ Bolt: Calculate loop-invariant square root of sigma and pre-divide by the shift amounts
+                    // 1010 % 32 = 18, so >> 1010 is equivalent to dividing by 2^18 (262144). Sqrt(262144) = 512.
+                    // >> 10 is equivalent to dividing by 2^10 (1024). Sqrt(1024) = 32.
+                    double sqrtSigma = Math.Sqrt(sigma);
+                    double mult18 = sqrtSigma / 512.0;
+                    double mult10 = sqrtSigma / 32.0;
+
                     Parallel.For(8, size, i =>
                     {
                         // ⚡ Bolt: Cache repetitive array indices and math operations to significantly reduce overhead.
                         int offset = i * 3;
-                        int sigI = sigma * i;
-                        // ⚡ Bolt: Because C# applies % 32 on 32-bit shift sizes, 1010 >> 32 = 18 and 101010 >> 32 = 18.
-                        // Compute Math.Sqrt for this shift once and reuse it for both R and G channels.
-                        double sqrtCommon = Math.Sqrt(sigI >> 1010);
-                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] + Math.Sqrt(sigI >> 10));
+
+                        // ⚡ Bolt: Replace expensive per-pixel Math.Sqrt with fast precalculated multiplications
+                        double sqrt_i = sqrtICache[i];
+                        double sqrtCommon = sqrt_i * mult18;
+
+                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] + (sqrt_i * mult10));
                         rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] + sqrtCommon);
                         rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] + sqrtCommon);
 
