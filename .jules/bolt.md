@@ -27,3 +27,7 @@
 ## 2025-03-09 - [Bytebeat Once-Off Initialization vs Continuous Shaders]
 **Learning:** [In `Hiphenatus/Bytebeat.cs`, large byte arrays containing mathematically expensive computations (like `Math.Sqrt` and `Math.Tan` in `Beat9`) are executed inside `while(true)` loops that actually terminate with `Thread.Sleep(Timeout.Infinite)`. Therefore, these generations happen strictly once per thread lifetime. Attempting to optimize these loops with massive cache arrays provides virtually zero real-time performance benefit and only serves to improve a ~100ms startup cost, whereas tight rendering loops in `Form1.cs` run on millions of pixels repeatedly every 1ms.]
 **Action:** [Always prioritize performance optimizations in true continuous frame rendering loops (`Parallel.For` in `Form1.cs`) rather than once-off initialization code threads that sleep infinitely.]
+
+## 2024-11-09 - Math.Sqrt inside tight loop optimized
+**Learning:** `Math.Sqrt(sigma * i)` inside tight loops like `Parallel.For` can be algebraically factored to `Math.Sqrt(sigma) * Math.Sqrt(i)`. Since `sigma` is loop invariant and `i` is static across frames, this enables a massive reduction in math overhead by precalculating `Math.Sqrt(i)` once into a cache and extracting `Math.Sqrt(sigma)` to outside the inner loop.
+**Action:** Always scan for complex mathematical operations (especially `Math.Sqrt`, `Math.Sin`, etc.) inside tight loops and check if they can be algebraically factored into loop-invariant components and static caches.
