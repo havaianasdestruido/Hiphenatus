@@ -508,6 +508,14 @@ namespace Hiphenatus
             IntPtr oldObject = SelectObject(mdc, bitmap);
             int sigma = 1;
             byte[] rgbArray = new byte[size * 3]; // Each RGBTRIPLE has 3 bytes
+
+            // ⚡ Bolt: Precalculate Math.Sqrt(i) for all pixels to eliminate millions of Sqrt calls per frame
+            double[] sqrtICache = new double[size];
+            Parallel.For(8, size, i =>
+            {
+                sqrtICache[i] = Math.Sqrt(i);
+            });
+
             try
             {
                 while (true)
@@ -515,13 +523,17 @@ namespace Hiphenatus
                     BitBlt(mdc, 0, 0, x, y, hdc, 0, 0, SRCCOPY);
                     Marshal.Copy(ppvBits, rgbArray, 0, rgbArray.Length);
 
+                    // ⚡ Bolt: Calculate loop-invariant square root of sigma
+                    double sqrtSigma = Math.Sqrt(sigma);
+
                     Parallel.For(8, size, i =>
                     {
                         // ⚡ Bolt: Cache repetitive array indices and math operations to significantly reduce overhead.
                         int offset = i * 3;
                         // ⚡ Bolt: Bypass expensive division instruction for pixels where i > sigma (99.9% of loop iterations).
                         int shift = i > sigma ? 0 : sigma / i;
-                        byte add = (byte)Math.Sqrt(sigma * i >> shift);
+                        // ⚡ Bolt: Use fast precalculated multiplications for i > sigma to drastically reduce Math.Sqrt calls
+                        byte add = i > sigma ? (byte)(sqrtSigma * sqrtICache[i]) : (byte)Math.Sqrt(sigma * i >> shift);
                         rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] + add);
                         rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] + add);
                         rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] + add);
