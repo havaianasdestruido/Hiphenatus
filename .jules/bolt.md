@@ -1,33 +1,7 @@
-## 2025-02-18 - [Math.Sqrt Overhead in Pixel Shaders]
-**Learning:** [Pixel processing loops frequently duplicated identical expensive math operations (Math.Sqrt) across R, G, B channels, resulting in a 3x penalty for calculations that evaluate to the same value.]
-**Action:** [Always extract loop-invariant calculations and common sub-expressions in tight graphics loops, and reuse index variables (e.g. i * 3) instead of recalculating.]
+## 2024-05-24 - C# Array Access Optimization
+**Learning:** Extracting a single array read/write into a local variable (e.g., `byte b = arr[i]; arr[i] = (byte)(b - 1)`) does not improve performance or reduce memory lookups compared to `arr[i] = (byte)(arr[i] - 1)`. The C# JIT compiler automatically optimizes both to identical machine code.
+**Action:** Avoid micro-optimizing simple read-modify-write array expressions unless it's a complex multi-variable swapping or shared computation logic.
 
-## 2025-02-14 - Precomputing static Math functions for screen-height dependent rendering
-**Learning:** In visual payload screens (e.g. Sines rendering effect), mathematical functions applied to the screen coordinates (`y`) don't need to be calculated repeatedly for every frame because the screen height doesn't change during the payload's runtime. We had over 1000 calls to Math.Tan() per frame inside an inner loop.
-**Action:** When calculating effects based on coordinates, precompute coordinate-based formulas into an array before the continuous render loop, and hoist loop-invariant math calculations (like time-based formulas `t`) to the outer loop scope.
-
-## 2025-02-18 - [Strength Reduction and Hidden Duplications in 32-bit Shift Modulo Rules]
-**Learning:** [In extremely tight rendering loops using Parallel.For, mathematical functions that seem distinct (like `Math.Sqrt(sigI >> 1010)` and `Math.Sqrt(sigI >> 101010)`) can actually evaluate to exactly the same operation because C# bitwise shifts on 32-bit integers implicitly use `modulo 32` for the right operand (e.g., 1010 % 32 = 18 and 101010 % 32 = 18). Also, division is vastly more expensive than multiplication in CPU cycles. Division by a constant value evaluated per frame (`1 / sinOk`) should be hoisted as a precomputed inverse multiplication outside inner loops (`Math.Tan(i * invSinOk)` instead of `Math.Tan(i / sinOk)`). Doing so eliminated millions of costly divisions per frame.]
-**Action:** [Always cache and eliminate identical expressions even if obfuscated by varying constant numbers, keeping in mind language-specific constant bitshift rules. Always prefer multiplying by an inverse instead of dividing in tight rendering inner loops.]
-## 2025-02-18 - [Strength Reduction: Division to Inverse Multiplication]
-**Learning:** [In extremely tight rendering loops (`Parallel.For` acting on 2.1+ million pixels), floating-point division inside the loop causes significant CPU overhead because it is an inherently slow instruction. Pre-calculating an inverse coefficient `1.0 / X` outside the loop and swapping the inner loop division `Y / X` to a multiplication `Y * inverseX` produces mathematically identical results for `byte` cast color mapping but executes exponentially faster.]
-**Action:** [Always audit tight pixel and byte manipulation loops to ensure loop-invariant division operations are extracted and transformed into multiplicative inverses.]
-## 2025-10-24 - [Strength Reduction: Avoiding Division with Conditional Bypass in Loops]
-**Learning:** [In extremely tight rendering loops (like `Parallel.For` acting over millions of pixels per frame), integer division operations (`X / Y`) can introduce a significant CPU bottleneck since division instructions take many more CPU cycles than basic branching or multiplication. If the divisor acts in such a way that the result evaluates to zero for the vast majority of iterations (e.g. `X < Y`), computing the division anyway wastes immense amounts of cycles.]
-**Action:** [Whenever encountering loop operations that involve division with a variable denominator that is typically much larger than the numerator, introduce a conditional branch check (like `Y > X ? 0 : X / Y`) to bypass the expensive division completely. Modern branch prediction handles this beautifully and execution times will decrease substantially.]
-
-## 2025-02-18 - [Precomputing Frame-Constant Math Functions]
-**Learning:** [In pixel shaders processing millions of pixels per frame within `Parallel.For` loops, applying trigonometric functions like `Math.Sin(i)` and `Math.Cos(i)` where `i` is the static pixel index results in massive redundant computation, as these values never change between frames.]
-**Action:** [Precompute pixel-index dependent static functions into arrays (like `sinCache` and `cosCache`) outside of the `while (true)` rendering loop and replace the expensive function calls with fast array lookups.]
-
-## 2025-02-18 - [Redundant Memory Writes from Un-swapped Channel Self-Assignment]
-**Learning:** [In tight rendering pixel loops that apply swap or matrix transformations to RGB channels (e.g. `rgbArray[offset + 2] = rgbArray[offset + 0]`), failing to properly use a temporary swap variable can result in overwriting channels with their own value while concurrently running redundant self-assignments (e.g. `rgbArray[offset + 1] = rgbArray[offset + 1]`). This causes millions of useless memory writes per frame, drastically increasing memory bandwidth overhead with zero visual effect.]
-**Action:** [Always audit channel swapping and assigning logic in tight `Parallel.For` loops to ensure redundant self-assignments are eliminated entirely, and that target destinations aren't inadvertently being assigned the very same value they were going to hold anyway.]
-
-## 2025-03-09 - [Bytebeat Once-Off Initialization vs Continuous Shaders]
-**Learning:** [In `Hiphenatus/Bytebeat.cs`, large byte arrays containing mathematically expensive computations (like `Math.Sqrt` and `Math.Tan` in `Beat9`) are executed inside `while(true)` loops that actually terminate with `Thread.Sleep(Timeout.Infinite)`. Therefore, these generations happen strictly once per thread lifetime. Attempting to optimize these loops with massive cache arrays provides virtually zero real-time performance benefit and only serves to improve a ~100ms startup cost, whereas tight rendering loops in `Form1.cs` run on millions of pixels repeatedly every 1ms.]
-**Action:** [Always prioritize performance optimizations in true continuous frame rendering loops (`Parallel.For` in `Form1.cs`) rather than once-off initialization code threads that sleep infinitely.]
-
-## 2024-11-09 - Math.Sqrt inside tight loop optimized
-**Learning:** `Math.Sqrt(sigma * i)` inside tight loops like `Parallel.For` can be algebraically factored to `Math.Sqrt(sigma) * Math.Sqrt(i)`. Since `sigma` is loop invariant and `i` is static across frames, this enables a massive reduction in math overhead by precalculating `Math.Sqrt(i)` once into a cache and extracting `Math.Sqrt(sigma)` to outside the inner loop.
-**Action:** Always scan for complex mathematical operations (especially `Math.Sqrt`, `Math.Sin`, etc.) inside tight loops and check if they can be algebraically factored into loop-invariant components and static caches.
+## 2024-05-24 - Expensive Disk I/O in Background Loops
+**Learning:** The application contained a background thread loop executing `Directory.GetFiles` on the massive System32 directory every 2 seconds to pick a random executable. This caused significant continuous disk I/O overhead.
+**Action:** Cache the results of static or rarely-changing heavy disk operations in static fields when used inside repetitive polling loops.
