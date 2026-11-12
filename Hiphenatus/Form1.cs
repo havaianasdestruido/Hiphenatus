@@ -119,9 +119,10 @@ namespace Hiphenatus
                     {
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
-                        rgbArray[offset + 2] = (byte)(rgbArray[offset + 2] - 1);
-                        rgbArray[offset + 1] = (byte)(rgbArray[offset + 1] - 1);
-                        rgbArray[offset + 0] = (byte)(rgbArray[offset + 0] - 1);
+                        // ⚡ Bolt: Use compound assignment operator to reduce array lookups and improve performance.
+                        rgbArray[offset + 2] -= 1;
+                        rgbArray[offset + 1] -= 1;
+                        rgbArray[offset + 0] -= 1;
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
@@ -671,9 +672,10 @@ namespace Hiphenatus
                     {
                         // ⚡ Bolt: Cache repetitive array indices to significantly reduce overhead.
                         int offset = i * 3;
-                        rgbArray[offset + 2] = (byte)(((rgbArray[offset + 2])) + 1);
-                        rgbArray[offset + 1] = (byte)(((rgbArray[offset + 1])) + 2);
-                        rgbArray[offset + 0] = (byte)(((rgbArray[offset + 0])) + 3);
+                        // ⚡ Bolt: Use compound assignment operator to reduce array lookups and improve performance.
+                        rgbArray[offset + 2] += 1;
+                        rgbArray[offset + 1] += 2;
+                        rgbArray[offset + 0] += 3;
 
                     });
                     Marshal.Copy(rgbArray, 0, ppvBits, rgbArray.Length);
